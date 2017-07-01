@@ -31,6 +31,7 @@
 		AFA068C318CE5D9F00ED5DAB /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AFA068C218CE5D9F00ED5DAB /* Default-568h@2x.png */; };
 		EF41B9DF1F06626B0005CD6C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EF41B9DE1F06626B0005CD6C /* AppDelegate.m */; };
 		EF41B9E11F0686460005CD6C /* CoreSpotlight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF41B9E01F0686460005CD6C /* CoreSpotlight.framework */; };
+		EF7877641F0774D900E22FC1 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF7877631F0774D900E22FC1 /* ReplayKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +67,7 @@
 		EF41B9DD1F06626B0005CD6C /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		EF41B9DE1F06626B0005CD6C /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		EF41B9E01F0686460005CD6C /* CoreSpotlight.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreSpotlight.framework; path = System/Library/Frameworks/CoreSpotlight.framework; sourceTree = SDKROOT; };
+		EF7877631F0774D900E22FC1 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EF7877641F0774D900E22FC1 /* ReplayKit.framework in Frameworks */,
 				EF41B9E11F0686460005CD6C /* CoreSpotlight.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -154,6 +157,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EF7877631F0774D900E22FC1 /* ReplayKit.framework */,
 				EF41B9E01F0686460005CD6C /* CoreSpotlight.framework */,
 				9B72F2550FCC87C4008F116A /* CoreGraphics.framework */,
 				28FD15070DC6FC5B0079059D /* QuartzCore.framework */,

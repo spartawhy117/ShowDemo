@@ -18,6 +18,7 @@ enum {
 
 @synthesize slider;
 @synthesize tabBar;
+@synthesize replayBtn;
 
 -(void)viewDidAppear:(BOOL)animated
 {
@@ -203,6 +204,7 @@ enum {
 {
 	self.slider = nil;
 	self.tabBar = nil;
+    self.replayBtn=nil;
     NSLog(@"销毁观察者");
    
     [super dealloc];
@@ -213,6 +215,11 @@ enum {
 {
 	// Redraw the view with the new settings
 	[((EAGLView*)self.view) drawView];
+}
+
+- (IBAction)replayPressed:(id)sender {
+    
+    NSLog(@"btn pressed");
 }
 
 

@@ -1,8 +1,10 @@
 #import "ViewController.h"
 #import "EAGLView.h"
+#import <ReplayKit/ReplayKit.h>
+
 
 #define DEG2RAD (M_PI/180.0f)
-
+#define AnimationDuration (0.3)
 
 
 enum {
@@ -13,6 +15,12 @@ enum {
 	BUTTON_SHARPNESS,
 	NUM_BUTTONS
 };
+
+@interface ViewController()<RPPreviewViewControllerDelegate>
+
+@property(nonatomic, strong)RPBroadcastController * broadcastViewController;
+
+@end
 
 @implementation ViewController
 
@@ -28,6 +36,8 @@ enum {
     
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionWithSportLight:) name:@"NoticeSpotlight" object:nil];
+    
+    
 }
 
 - (void)viewDidLoad
@@ -189,6 +199,7 @@ enum {
 	CGContextRelease(context);
 	CGColorSpaceRelease(colorSpace);
     
+    //
     
     
 }
@@ -217,9 +228,31 @@ enum {
 	[((EAGLView*)self.view) drawView];
 }
 
-- (IBAction)replayPressed:(id)sender {
+- (IBAction)replayPressed:(UIButton *)sender {
     
     NSLog(@"btn pressed");
+    
+    if([self isSystemVersionOK])
+    {
+        NSString *name=sender.currentTitle;
+        NSLog(@" button name is :%@",name);
+        if([name isEqualToString:@"start"])
+        {
+            [replayBtn setTitle:@ "stop" forState:UIControlStateNormal];
+            [self startRecording];
+        }
+        else if([name isEqualToString:@"stop"])
+        {
+             [replayBtn setTitle:@ "start" forState:UIControlStateNormal];
+            [self stopRecording];
+        }
+    }
+    else
+    {
+        NSLog(@"can't support");
+    }
+    
+   
 }
 
 
@@ -275,5 +308,188 @@ enum {
      }
 }
 
+#pragma mark -replay kit check
+-(BOOL)isSystemVersionOK
+{
+    if([[UIDevice currentDevice].systemVersion floatValue]<9.0)
+    {
+        return NO;
+    }
+    else
+    {
+        return YES;
+    }
+}
+
+-(BOOL)checkSupportRecording
+{
+    if([[RPScreenRecorder sharedRecorder]isAvailable])
+    {
+        return YES;
+    }
+    else{
+        return NO;
+    }
+}
+
+#pragma mark - alert
+-(void)showAlertWithString:(NSString *)message
+{
+    UIAlertController *alertController=[UIAlertController alertControllerWithTitle:@"warning" message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancelAction=[UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleCancel handler:nil];
+    [alertController addAction:cancelAction];
+    [self presentViewController:alertController animated:YES completion:nil];
+    
+}
+
+- (void)showAlert:(NSString *)title andMessage:(NSString *)message {
+    if (!title) {
+        title = @"";
+    }
+    if (!message) {
+        message = @"";
+    }
+    UIAlertAction *actionCancel = [UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:actionCancel];
+    [self presentViewController:alert animated:NO completion:nil];
+}
+#pragma mark -replaykit delegate
+-(void)startRecording
+{
+    if(![self checkSupportRecording])
+        
+    {
+        [self showAlertWithString:@"can't support record!"];
+        return;
+    }
+    
+    //    __weak ViewController *weakSelf=self;
+    
+    [[RPScreenRecorder sharedRecorder]startRecordingWithHandler:^(NSError *error){
+        if(error)
+        {
+            NSLog(@"wrong meassage %@",error);
+            [self showAlertWithString:error.description];
+        }
+        else
+        {
+
+            NSLog(@"start recording");
+        }
+        
+        
+    }];
+    
+    
+    
+}
+-(void)stopRecording
+{
+    //    __weak ViewController *weakSelf=self;
+    [[RPScreenRecorder sharedRecorder]stopRecordingWithHandler:^(RPPreviewViewController * _Nullable previewViewController, NSError * _Nullable error) {
+        
+        if(error)
+        {
+            NSLog(@"wrong meassage %@",error);
+            [self showAlertWithString:error.description];
+            
+        }
+        else{
+            
+            NSLog(@"show preview");
+            previewViewController.previewControllerDelegate=self;
+            
+            
+            [self showVideoPreviewController:previewViewController withAnimation:YES];
+        }
+        
+        
+    }];
+}
+
+-(void)showVideoPreviewController:(RPPreviewViewController *)previewController withAnimation:(BOOL)animation
+{
+    
+    
+    __weak ViewController *weakSelf=self;
+    
+    //ui change to main thread
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        CGRect rect=[UIScreen mainScreen].bounds;
+        if(animation)
+        {
+            rect.origin.x+=rect.size.width;
+            previewController.view.frame=rect;
+            rect.origin.x-=rect.size.width;
+            
+            [UIView animateWithDuration:AnimationDuration animations:^(void){
+                previewController.view.frame=rect;
+            }completion:^(BOOL finished)
+             {
+                 
+             }];
+            
+            
+        }
+        else
+        {
+            previewController.view.frame=rect;
+        }
+        
+        [weakSelf.view addSubview:previewController.view];
+        [weakSelf addChildViewController:previewController];
+        
+        
+    });}
+//关闭视频预览页面，animation=是否要动画显示
+- (void)hideVideoPreviewController:(RPPreviewViewController *)previewController withAnimation:(BOOL)animation {
+    
+    //UI需要放到主线程
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        CGRect rect = previewController.view.frame;
+        
+        if (animation) {
+            
+            rect.origin.x += rect.size.width;
+            [UIView animateWithDuration:AnimationDuration animations:^(){
+                previewController.view.frame = rect;
+            } completion:^(BOOL finished){
+                //移除页面
+                [previewController.view removeFromSuperview];
+                [previewController removeFromParentViewController];
+            }];
+            
+        } else {
+            //移除页面
+            [previewController.view removeFromSuperview];
+            [previewController removeFromParentViewController];
+        }
+    });
+    
+}
+
+#pragma mark - preview vedio callback
+-(void)previewControllerDidFinish:(RPPreviewViewController *)previewController
+{
+    [self hideVideoPreviewController:previewController withAnimation:YES];
+}
+
+-(void)previewController:(RPPreviewViewController *)previewController didFinishWithActivityTypes:(NSSet<NSString *> *)activityTypes
+{
+    __weak ViewController *weakSelf=self;
+    if ([activityTypes containsObject:@"com.apple.UIKit.activity.SaveToCameraRoll"]) {
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf showAlert:@"保存成功" andMessage:@"已经保存到系统相册"];
+        });
+    }
+    if ([activityTypes containsObject:@"com.apple.UIKit.activity.CopyToPasteboard"]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf showAlert:@"复制成功" andMessage:@"已经复制到粘贴板"];
+        });
+    }}
 
 @end

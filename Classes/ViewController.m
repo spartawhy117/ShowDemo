@@ -5,6 +5,7 @@
 
 #define DEG2RAD (M_PI/180.0f)
 #define AnimationDuration (0.3)
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
 
 enum {
@@ -16,9 +17,11 @@ enum {
 	NUM_BUTTONS
 };
 
-@interface ViewController()<RPPreviewViewControllerDelegate>
+@interface ViewController()<RPPreviewViewControllerDelegate,RPBroadcastActivityViewControllerDelegate,RPBroadcastControllerDelegate>
 
-@property(nonatomic, strong)RPBroadcastController * broadcastViewController;
+@property(nonatomic, strong)RPBroadcastController * broadcastController;
+@property (nonatomic, weak)   UIView   *cameraPreview;
+@property (nonatomic, assign) BOOL allowLive;
 
 @end
 
@@ -27,6 +30,7 @@ enum {
 @synthesize slider;
 @synthesize tabBar;
 @synthesize replayBtn;
+@synthesize liveBtn;
 
 -(void)viewDidAppear:(BOOL)animated
 {
@@ -218,9 +222,10 @@ enum {
     self.replayBtn=nil;
     NSLog(@"销毁观察者");
    
+    [liveBtn release];
     [super dealloc];
 }
-
+#pragma mark -UI action
 
 - (void)sliderAction:(id)sender
 {
@@ -230,12 +235,11 @@ enum {
 
 - (IBAction)replayPressed:(UIButton *)sender {
     
-    NSLog(@"btn pressed");
     
     if([self isSystemVersionOK])
     {
         NSString *name=sender.currentTitle;
-        NSLog(@" button name is :%@",name);
+        
         if([name isEqualToString:@"start"])
         {
             [replayBtn setTitle:@ "stop" forState:UIControlStateNormal];
@@ -249,10 +253,30 @@ enum {
     }
     else
     {
-        NSLog(@"can't support");
+        NSLog(@"replayKit record can't support");
     }
     
    
+}
+
+- (IBAction)livePressed:(UIButton *)sender {
+    
+    if([self checkSupportLiveAndSet])
+    {
+        NSString *name=sender.currentTitle;
+        
+        if([name isEqualToString:@"Live Start"])
+        {
+            
+            [liveBtn setTitle:@"Live Stop" forState:UIControlStateNormal];
+            [self liveStart];
+            
+        }else if([name isEqualToString:@"Live Stop"])
+        {
+            [liveBtn setTitle:@"Live Start" forState:UIControlStateNormal];
+            [self liveFinsh];
+        }
+    }
 }
 
 
@@ -330,6 +354,20 @@ enum {
     else{
         return NO;
     }
+}
+
+-(BOOL)checkSupportLiveAndSet
+{
+    self.allowLive=SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.0");
+    
+    if(self.allowLive)
+    {
+        //使用相机
+        [RPScreenRecorder sharedRecorder].cameraEnabled = true;
+        //使用麦克风
+        [RPScreenRecorder sharedRecorder].microphoneEnabled = true;
+    }
+    return _allowLive;
 }
 
 #pragma mark - alert
@@ -471,7 +509,7 @@ enum {
     
 }
 
-#pragma mark - preview vedio callback
+#pragma mark - replaykit vedio callback
 -(void)previewControllerDidFinish:(RPPreviewViewController *)previewController
 {
     [self hideVideoPreviewController:previewController withAnimation:YES];
@@ -490,6 +528,122 @@ enum {
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf showAlert:@"复制成功" andMessage:@"已经复制到粘贴板"];
         });
-    }}
+    }
+}
 
+#pragma mark -replaykit live 
+
+-(void)liveStart
+{
+    __weak ViewController* weakSelf=self;
+    
+    if(![RPScreenRecorder sharedRecorder].isRecording)
+    {
+        [RPBroadcastActivityViewController loadBroadcastActivityViewControllerWithHandler:^(RPBroadcastActivityViewController * _Nullable broadcastActivityViewController, NSError * _Nullable error) {
+            if (error != nil) {
+                NSLog(@"%@",error);
+                return;
+            }
+            broadcastActivityViewController.delegate=weakSelf;
+            broadcastActivityViewController.modalPresentationStyle=UIModalPresentationPopover;
+            
+            //ipad适配
+            if([UIDevice currentDevice].userInterfaceIdiom==UIUserInterfaceIdiomPad)
+            {
+                broadcastActivityViewController.popoverPresentationController.sourceRect = weakSelf.liveBtn.frame;
+                broadcastActivityViewController.popoverPresentationController.sourceView=weakSelf.liveBtn;
+                
+            }
+            
+            
+            [weakSelf presentViewController:broadcastActivityViewController animated:true completion:^{
+                
+            }];
+            
+        }];
+        
+    }
+    else{
+        //断开当前链接
+        [self.broadcastController finishBroadcastWithHandler:^(NSError * _Nullable error) {
+            
+            
+        }];
+    }
+
+}
+
+-(void)liveFinsh
+{
+    __weak ViewController *weakSelf=self;
+    [self.broadcastController finishBroadcastWithHandler:^(NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"finishBroadcastWithHandler %@",error);
+        }
+        
+        //移除摄像头
+        [weakSelf.cameraPreview removeFromSuperview];
+        
+        
+    }];
+}
+
+-(void)broadcastActivityViewController:(RPBroadcastActivityViewController *)broadcastActivityViewController didFinishWithBroadcastController:(RPBroadcastController *)broadcastController error:(NSError *)error{
+    
+    
+    if (error) {
+        NSLog(@"didFinishWithBroadcastController with error %@",error);
+    }
+    [broadcastActivityViewController dismissViewControllerAnimated:true completion:nil];
+    
+    self.broadcastController = broadcastController;
+    
+    
+    __weak ViewController* weakSelf=self;
+    if(!error)
+    {
+        [broadcastController startBroadcastWithHandler:^(NSError * _Nullable error) {
+            
+            NSLog(@"broadcastControllerHandler");
+            if(!error)
+            {
+                
+                weakSelf.broadcastController.delegate=self;
+                UIView* cameraView = [[RPScreenRecorder sharedRecorder] cameraPreviewView];
+                weakSelf.cameraPreview=cameraView;
+                if(cameraView)
+                {
+                    cameraView.frame=CGRectMake(0, 0, 200, 200);
+                    [weakSelf.view addSubview:cameraView];
+                    
+                    
+                    
+                }
+                
+                
+            }
+            else{
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error"
+                                                                                         message:error.localizedDescription
+                                                                                  preferredStyle:UIAlertControllerStyleAlert];
+                
+                [alertController addAction:[UIAlertAction actionWithTitle:@"Ok"
+                                                                    style:UIAlertActionStyleCancel
+                                                                  handler:nil]];
+                
+                [self presentViewController:alertController
+                                   animated:YES
+                                 completion:nil];
+            }
+        }];
+        
+        
+    }
+    else{
+        NSLog(@"Error returning from Broadcast Activity: %@", error);
+    }
+    
+    
+    
+}
 @end

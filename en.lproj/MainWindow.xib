@@ -56,6 +56,14 @@
                             <action selector="replayPressed:" destination="11" eventType="touchUpInside" id="S89-BX-5Cp"/>
                         </connections>
                     </button>
+                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="BEP-Np-1He">
+                        <rect key="frame" x="248" y="58" width="66" height="30"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <state key="normal" title="Live Start"/>
+                        <connections>
+                            <action selector="livePressed:" destination="11" eventType="touchUpInside" id="MD3-Jp-aKt"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                 <connections>
@@ -70,6 +78,7 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <size key="freeformSize" width="320" height="480"/>
             <connections>
+                <outlet property="liveBtn" destination="BEP-Np-1He" id="Ovq-FV-vfL"/>
                 <outlet property="replayBtn" destination="Psf-ZI-Gg6" id="mLa-5h-ahG"/>
                 <outlet property="slider" destination="D1W-tg-nfr" id="RLz-s4-RSM"/>
                 <outlet property="tabBar" destination="Dg7-ST-fmQ" id="qzd-xF-CsB"/>

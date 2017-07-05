@@ -283,6 +283,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "MyDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.myos.spartawhy.my3dtouch-demo";
 				PRODUCT_NAME = MyDemo;
 			};
@@ -298,6 +299,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = "MyDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.myos.spartawhy.my3dtouch-demo";
 				PRODUCT_NAME = MyDemo;
 			};

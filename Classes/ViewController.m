@@ -337,7 +337,9 @@ enum {
 {
     if([[UIDevice currentDevice].systemVersion floatValue]<9.0)
     {
+        [self showAlert:@"错误" andMessage:@"系统版本过低不支持录制"];
         return NO;
+        
     }
     else
     {
@@ -352,6 +354,7 @@ enum {
         return YES;
     }
     else{
+         [self showAlert:@"错误" andMessage:@"当前录制器不可用"];
         return NO;
     }
 }
@@ -359,6 +362,8 @@ enum {
 -(BOOL)checkSupportLiveAndSet
 {
     self.allowLive=SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.0");
+    
+    
     
     if(self.allowLive)
     {
@@ -623,17 +628,8 @@ enum {
                 
             }
             else{
-                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error"
-                                                                                         message:error.localizedDescription
-                                                                                  preferredStyle:UIAlertControllerStyleAlert];
                 
-                [alertController addAction:[UIAlertAction actionWithTitle:@"Ok"
-                                                                    style:UIAlertActionStyleCancel
-                                                                  handler:nil]];
-                
-                [self presentViewController:alertController
-                                   animated:YES
-                                 completion:nil];
+                [self showAlert:@"错误" andMessage:error.localizedDescription];
             }
         }];
         
@@ -642,8 +638,6 @@ enum {
     else{
         NSLog(@"Error returning from Broadcast Activity: %@", error);
     }
-    
-    
     
 }
 @end

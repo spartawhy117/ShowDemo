@@ -447,7 +447,6 @@ enum {
             [self showVideoPreviewController:previewViewController withAnimation:YES];
         }
         
-        
     }];
 }
 
@@ -515,11 +514,12 @@ enum {
 }
 
 #pragma mark - replaykit vedio callback
+//通知预览时图控制器可以进行退出
 -(void)previewControllerDidFinish:(RPPreviewViewController *)previewController
 {
     [self hideVideoPreviewController:previewController withAnimation:YES];
 }
-
+//Indicates that the preview view controller is ready to be dismissed with associated activity types.
 -(void)previewController:(RPPreviewViewController *)previewController didFinishWithActivityTypes:(NSSet<NSString *> *)activityTypes
 {
     __weak ViewController *weakSelf=self;

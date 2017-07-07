@@ -66,23 +66,13 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"Notice3DTouch" object:self userInfo:@{ @"type" : shortcutItem.type }];
 }
 
+#pragma mark - spotlight delegate
 -(BOOL)application:(UIApplication* )application continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(nonnull void (^)(NSArray * _Nullable))restorationHandler
 {
     if([userActivity.activityType isEqualToString:CSSearchableItemActionType])
     {
         NSString *identifier=userActivity.userInfo[CSSearchableItemActivityIdentifier];
         
-//        ViewController *rootController=(ViewController *)self.window.rootViewController;
-//        
-//        if([identifier isEqualToString:@"homeItem"])
-//        {
-//            rootController.tabBar.selectedItem=[rootController.tabBar.items objectAtIndex:0];
-//        }
-//        else if ([identifier isEqualToString:@"newThingsItem"])
-//            
-//        {
-//          rootController.tabBar.selectedItem=[rootController.tabBar.items objectAtIndex:1];
-//        }
          [[NSNotificationCenter defaultCenter] postNotificationName:@"NoticeSpotlight" object:self userInfo:@{ @"identifier" : identifier }];
         
         

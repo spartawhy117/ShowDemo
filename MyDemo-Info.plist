@@ -74,5 +74,10 @@
     <string>ReplayKit直播请求使用您的摄像头</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>ReplayKit直播请求使用您的麦克风</string>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
 </dict>
 </plist>

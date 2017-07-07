@@ -32,6 +32,8 @@
 		EF41B9DF1F06626B0005CD6C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EF41B9DE1F06626B0005CD6C /* AppDelegate.m */; };
 		EF41B9E11F0686460005CD6C /* CoreSpotlight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF41B9E01F0686460005CD6C /* CoreSpotlight.framework */; };
 		EF7877641F0774D900E22FC1 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF7877631F0774D900E22FC1 /* ReplayKit.framework */; };
+		EF98B91D1F0F60F500359B45 /* WKWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF98B91C1F0F60F500359B45 /* WKWebViewController.m */; };
+		EF98B91F1F0F6EF100359B45 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF98B91E1F0F6EF100359B45 /* WebKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +70,9 @@
 		EF41B9DE1F06626B0005CD6C /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		EF41B9E01F0686460005CD6C /* CoreSpotlight.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreSpotlight.framework; path = System/Library/Frameworks/CoreSpotlight.framework; sourceTree = SDKROOT; };
 		EF7877631F0774D900E22FC1 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
+		EF98B91B1F0F60F500359B45 /* WKWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WKWebViewController.h; sourceTree = "<group>"; };
+		EF98B91C1F0F60F500359B45 /* WKWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WKWebViewController.m; sourceTree = "<group>"; };
+		EF98B91E1F0F6EF100359B45 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EF98B91F1F0F6EF100359B45 /* WebKit.framework in Frameworks */,
 				EF7877641F0774D900E22FC1 /* ReplayKit.framework in Frameworks */,
 				EF41B9E11F0686460005CD6C /* CoreSpotlight.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
@@ -97,6 +103,8 @@
 				EF41B9DE1F06626B0005CD6C /* AppDelegate.m */,
 				9B72F2420FCC86E3008F116A /* ViewController.h */,
 				9B72F2430FCC86E3008F116A /* ViewController.m */,
+				EF98B91B1F0F60F500359B45 /* WKWebViewController.h */,
+				EF98B91C1F0F60F500359B45 /* WKWebViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -157,6 +165,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EF98B91E1F0F6EF100359B45 /* WebKit.framework */,
 				EF7877631F0774D900E22FC1 /* ReplayKit.framework */,
 				EF41B9E01F0686460005CD6C /* CoreSpotlight.framework */,
 				9B72F2550FCC87C4008F116A /* CoreGraphics.framework */,
@@ -254,6 +263,7 @@
 				9B72F24A0FCC86EE008F116A /* Texture.m in Sources */,
 				9B81DC9E0FF08151008DF9CA /* Debug.c in Sources */,
 				EF41B9DF1F06626B0005CD6C /* AppDelegate.m in Sources */,
+				EF98B91D1F0F60F500359B45 /* WKWebViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

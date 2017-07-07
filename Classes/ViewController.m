@@ -1,7 +1,7 @@
 #import "ViewController.h"
 #import "EAGLView.h"
 #import <ReplayKit/ReplayKit.h>
-
+#import "WKWebViewController.h"
 
 #define DEG2RAD (M_PI/180.0f)
 #define AnimationDuration (0.3)
@@ -282,10 +282,22 @@ enum {
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
-	// Recenter the slider (this application does not accumulate multiple filters)
+    
 	[self.slider setValue:1.0 animated:YES];
-	// Redraw the view with the new settings
-	[((EAGLView*)self.view) drawView];
+	
+	
+    
+    int mode = (int)self.tabBar.selectedItem.tag;
+    if(mode==1)
+    {
+        WKWebViewController *wkController=[[WKWebViewController alloc]init];
+        [wkController OpenUrl:@"http://www.163.com"];
+        [self presentViewController:wkController animated:YES completion:nil];
+        
+    }else{
+        [((EAGLView*)self.view) drawView];
+    }
+    
 }
 
 #pragma mark -notification
